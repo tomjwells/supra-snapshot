@@ -1,0 +1,65 @@
+{
+  "name": "@acme/nextjs",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm with-env next build",
+    "clean": "git clean -xdf .next .turbo node_modules",
+    "dev": "PORT=3001 NODE_OPTIONS=\"--max_old_space_size=8192\" pnpm with-env next dev -p 3001",
+    "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
+    "lint:fix": "pnpm lint --fix",
+    "format": "prettier --check \"**/*.{js,cjs,mjs,ts,tsx,md,json}\"",
+    "start": "pnpm with-env next start",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@acme/analytics": "workspace:*",
+    "@acme/auth": "workspace:*",
+    "@acme/cloudinary": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@acme/shadcn": "workspace:*",
+    "@acme/ui": "workspace:*",
+    "@acme/utils": "workspace:*",
+    "@heroicons/react": "2.1.1",
+    "@headlessui/react": "1.7.18",
+    "react-icons": "5.0.1",
+    "next": "14.2.3",
+    "next-themes": "0.2.1",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "react-beautiful-dnd": "13.1.1",
+    "react-hook-form": "7.51.4",
+    "@hookform/resolvers": "3.3.4",
+    "react-loading-skeleton": "3.3.1",
+    "recharts": "2.8.0",
+    "react-dom-confetti": "0.2.0"
+  },
+  "devDependencies": {
+    "@next/bundle-analyzer": "14.1.2",
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tailwind-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@types/node": "^20.14.9",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "@types/react-beautiful-dnd": "13.1.7",
+    "autoprefixer": "10.4.18",
+    "dotenv-cli": "^7.4.2",
+    "prettier": "catalog:",
+    "sharp": "^0.32.6",
+    "jiti": "catalog:",
+    "sass": "1.71.1"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base",
+      "@acme/eslint-config/nextjs",
+      "@acme/eslint-config/react"
+    ]
+  },
+  "prettier": "@acme/prettier-config"
+}

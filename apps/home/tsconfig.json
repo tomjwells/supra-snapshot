@@ -1,0 +1,27 @@
+{
+  "extends": "@acme/tsconfig/base.json",
+  "compilerOptions": {
+    "skipLibCheck": true,
+    "lib": ["es2022", "dom", "dom.iterable"],
+    "jsx": "preserve",
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./src/*"],
+      "@styles/*": ["./src/styles/*"],
+      "@components/*": ["src/components/*"],
+      "@lib/*": ["src/lib/*"],
+      "@data/*": ["data/*"]
+    },
+    "plugins": [{ "name": "next" }],
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json",
+    "module": "esnext",
+    "strictNullChecks": true
+  },
+  "include": [
+    ".",
+    ".next/types/**/*.ts",
+    "../nextjs/src/app/(dashboard)/_layout/Sidebar/theme-toggle-button.tsx",
+    "../../packages/ui/src/Brand/global-error.tsx"
+  ],
+  "exclude": ["node_modules"]
+}

@@ -1,0 +1,77 @@
+{
+  "name": "@acme/checkout",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "pnpm with-env next build",
+    "clean": "git clean -xdf .next .turbo node_modules",
+    "dev": "PORT=3002 NODE_OPTIONS=\"--max_old_space_size=8192\" pnpm with-env next dev -p 3002",
+    "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
+    "lint:fix": "pnpm lint --fix",
+    "format": "prettier --check \"**/*.{js,cjs,mjs,ts,tsx,md,json}\"",
+    "start": "pnpm with-env next start",
+    "type-check": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@emurgo/cardano-serialization-lib-browser": "11.5.0",
+    "@emurgo/cardano-serialization-lib-asmjs": "11.3.0",
+    "@meshsdk/core": "1.5.7-beta.1",
+    "@meshsdk/react": "1.1.7",
+    "@acme/analytics": "workspace:*",
+    "@acme/analytics-telegram": "workspace:*",
+    "@acme/checkout-api-pages": "workspace:*",
+    "@acme/cloudinary": "workspace:*",
+    "@acme/cardano": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@acme/db-drizzle": "workspace:*",
+    "@acme/shadcn": "workspace:*",
+    "@acme/ui": "workspace:*",
+    "@acme/utils": "workspace:*",
+    "@heroicons/react": "^2.0.18",
+    "@tanstack/react-query": "^4.36.1",
+    "@tanstack/react-query-devtools": "^4.36.1",
+    "@tanstack/react-query-next-experimental": "5.0.0-alpha.80",
+    "@trpc/client": "^10.40.0",
+    "@trpc/next": "^10.40.0",
+    "@trpc/react-query": "^10.40.0",
+    "@trpc/server": "^10.40.0",
+    "i18n-iso-countries": "^7.7.0",
+    "next": "14.2.3",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "react-email": "2.1.5",
+    "react-hook-form": "7.51.4",
+    "react-loading-skeleton": "3.3.1",
+    "superjson": "1.13.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tailwind-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@types/node": "^20.14.9",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "autoprefixer": "^10.4.16",
+    "dotenv-cli": "^7.4.2",
+    "prettier": "catalog:",
+    "jiti": "catalog:",
+    "sharp": "^0.32.6"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base",
+      "@acme/eslint-config/nextjs",
+      "@acme/eslint-config/react"
+    ]
+  },
+  "prettier": "@acme/prettier-config",
+  "browser": {
+    "tls": false,
+    "net": false
+  }
+}

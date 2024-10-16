@@ -1,0 +1,44 @@
+{
+  "name": "@acme/email",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "format": "prettier --check \"**/*.{mjs,ts,tsx,md,json}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/analytics": "workspace:*",
+    "@acme/ui": "workspace:*",
+    "@react-email/button": "0.0.14",
+    "@react-email/components": "0.0.16",
+    "@react-email/html": "0.0.7",
+    "@react-email/render": "0.0.12",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "resend": "3.2.0"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tailwind-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@types/node": "^20.14.9",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "autoprefixer": "^10.4.16",
+    "dotenv-cli": "^7.4.2",
+    "prettier": "catalog:",
+    "sharp": "^0.32.6",
+    "typescript": "catalog:"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./functions": "./functions/index.ts",
+    "./env": "./env.ts"
+  }
+}

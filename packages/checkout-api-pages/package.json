@@ -1,0 +1,52 @@
+{
+  "name": "@acme/checkout-api-pages",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "format": "prettier --check \"**/*.{mjs,ts,md,json}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/analytics": "workspace:*",
+    "@acme/analytics-telegram": "workspace:*",
+    "@acme/cardano": "workspace:*",
+    "@acme/db": "workspace:*",
+    "@acme/email": "workspace:*",
+    "@acme/utils": "workspace:*",
+    "@meshsdk/core": "1.5.10",
+    "@meshsdk/react": "1.1.9",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "@trpc/client": "^10.40.0",
+    "@trpc/server": "^10.40.0",
+    "next": "14.2.3",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "superjson": "1.13.1",
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@types/node-telegram-bot-api": "0.61.8",
+    "encoding": "^0.1.13",
+    "prettier": "catalog:"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./env": "./env.ts"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base"
+    ]
+  },
+  "prettier": "@acme/prettier-config"
+}

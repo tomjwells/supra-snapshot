@@ -1,0 +1,37 @@
+{
+  "name": "@acme/auth",
+  "version": "0.0.0",
+  "private": true,
+  "main": "./index.ts",
+  "types": "./index.ts",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./index.ts",
+    "./env": "./env.ts",
+    "./organizationsHelper": "./organizationsHelper.ts",
+    "./environmentsHelper": "./environmentsHelper.ts"
+  },
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "lint:fix": "pnpm lint --fix",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/cloudinary": "workspace:*",
+    "@acme/db-drizzle": "workspace:*",
+    "@acme/email": "workspace:*",
+    "@auth/core": "0.32.0",
+    "@auth/drizzle-adapter": "^1.4.1",
+    "@t3-oss/env-nextjs": "^0.10.1",
+    "zod": "catalog:",
+    "next-auth": "5.0.0-beta.19"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "prettier": "catalog:"
+  }
+}

@@ -1,0 +1,14 @@
+@media (max-width: 650px) {
+  .colorbg {
+    background: radial-gradient(circle at 15% 50%, var(--indigo-4), rgba(255, 255, 255, 0) 25%),
+      radial-gradient(circle at 85% 30%, var(--cyan-4), rgba(255, 255, 255, 0) 25%);
+    opacity: 0.8;
+  }
+}
+@media (650px < width) {
+  .colorbg {
+    background: radial-gradient(circle at 15% 50%, var(--indigo-4), rgba(255, 255, 255, 0) 25%),
+      radial-gradient(circle at 85% 30%, var(--cyan-4), rgba(255, 255, 255, 0) 25%);
+    opacity: 0.8;
+  }
+}

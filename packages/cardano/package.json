@@ -1,0 +1,38 @@
+{
+  "name": "@acme/cardano",
+  "version": "0.0.0",
+  "private": true,
+  "types": "./index.ts",
+  "license": "MIT",
+  "scripts": {
+    "clean": "rm -rf .turbo node_modules",
+    "lint": "eslint .",
+    "format": "prettier --check \"**/*.{mjs,ts,md,json}\"",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@emurgo/cardano-serialization-lib-asmjs": "11.3.0",
+    "@meshsdk/core": "1.5.10",
+    "@meshsdk/react": "1.1.9"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "prettier": "catalog:"
+  },
+  "exports": {
+    ".": "./index.ts",
+    "./AppWallets": "./AppWallets.ts",
+
+    "./env": "./env.ts"
+
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base"
+    ]
+  },
+  "prettier": "@acme/prettier-config"
+}

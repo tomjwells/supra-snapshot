@@ -1,0 +1,608 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider        = "prisma-client-js"
+    previewFeatures = ["driverAdapters"]
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+// Necessary for Next auth
+model Account {
+    id                 String  @id @default(uuid())
+    userId             String
+    type               String
+    provider           String
+    providerAccountId  String
+    refresh_token      String? @db.Text
+    access_token       String? @db.Text
+    oauth_token        String? // 
+    oauth_token_secret String? // 
+    expires_at         Int?
+    token_type         String?
+    scope              String?
+    id_token           String? @db.Text
+    session_state      String?
+    user               User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@unique([provider, providerAccountId])
+    @@index([userId])
+}
+
+model Session {
+    id           String   @id @default(uuid())
+    sessionToken String   @unique
+    userId       String
+    expires      DateTime
+    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+}
+
+model VerificationToken {
+    identifier String
+    token      String   @unique
+    expires    DateTime
+
+    @@unique([identifier, token])
+}
+
+model User {
+    id                     String         @id @default(uuid())
+    name                   String?
+    email                  String?        @unique
+    emailVerified          DateTime?
+    image                  String?
+    accounts               Account[]
+    sessions               Session[]
+    createdAt              DateTime       @default(now())
+    organizations          Organization[] @relation("Organizations")
+    selectedOrganizationId String?
+    selectedOrganization   Organization?  @relation("SelectedOrganization", fields: [selectedOrganizationId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+
+    personalOrganizationId String?
+    personalOrganization   Organization?         @relation("PersonalOrganization", fields: [personalOrganizationId], references: [id], onUpdate: NoAction, onDelete: NoAction)
+    SelectedEnvironments   SelectedEnvironment[] @relation("UserSelectedEnvironments")
+
+    @@index([selectedOrganizationId])
+    @@index([personalOrganizationId])
+}
+
+enum OrganizationTier {
+    FREE
+    PROFESSIONAL
+}
+
+model Organization {
+    id                   String                @id @default(uuid())
+    name                 String
+    image                String?
+    createdAt            DateTime              @default(now())
+    updatedAt            DateTime              @updatedAt
+    userId               String
+    user                 User                  @relation("Organizations", fields: [userId], references: [id], onDelete: Cascade)
+    selectedOrganization User[]                @relation("SelectedOrganization")
+    personalOrganization User[]                @relation("PersonalOrganization")
+    SelectedEnvironments SelectedEnvironment[] @relation("OrganizationSelectedEnvironments")
+    Environment          Environment[]
+
+    testnetWithdrawalAddress String?
+    mainnetWithdrawalAddress String?
+
+    tier OrganizationTier @default(FREE)
+
+    @@index([userId])
+}
+
+model SelectedEnvironment {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    userId         String
+    User           User         @relation("UserSelectedEnvironments", fields: [userId], references: [id], onDelete: Cascade)
+    environmentId  String
+    Environment    Environment  @relation("EnvironmentSelectedEnvironments", fields: [environmentId], references: [id], onDelete: Cascade)
+    organizationId String
+    Organization   Organization @relation("OrganizationSelectedEnvironments", fields: [organizationId], references: [id], onDelete: Cascade)
+
+    @@index([userId])
+    @@index([environmentId])
+    @@index([organizationId])
+}
+
+enum Network {
+    mainnet
+    testnet
+}
+
+model Environment {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name    String
+    type    String // "production", "test"
+    network Network @default(testnet)
+
+    organizationId      String
+    Organization        Organization         @relation(fields: [organizationId], references: [id])
+    Product             Product[]
+    NotificationSources NotificationSource[] @relation("NotificationSources")
+
+    SelectedEnvironments SelectedEnvironment[] @relation("EnvironmentSelectedEnvironments")
+
+    // Withdrawal Address
+    Collection     Collection[]
+    Webhook        Webhook[]
+    ShippingPolicy ShippingPolicy[]
+
+    @@index([organizationId])
+}
+
+enum ProductStatus {
+    ACTIVE
+    INACTIVE
+    ARCHIVED
+}
+
+model Product {
+    id                 String         @id @default(uuid())
+    name               String?
+    description        String?        @db.Text
+    image              String?
+    price              Decimal?       @db.Decimal(10, 2)
+    currencyId         String
+    createdAt          DateTime       @default(now())
+    updatedAt          DateTime       @updatedAt
+    currency           Currencies     @relation(fields: [currencyId], references: [id])
+    acceptedCurrencies Currencies[]   @relation("ProductAcceptedCurrencies")
+    environmentId      String
+    CheckoutLink       CheckoutLink[] @relation("CheckoutLinks")
+    Payment            Payment[]      @relation("ProductPayment")
+    withdrawalMethod   String         @default("instant")
+
+    // Collect Customer Information
+    collect_email              Boolean             @default(false)
+    collect_address            Boolean             @default(false)
+    collect_custom_information CustomInformation[]
+
+    // Inventory
+    inventory_track           Boolean @default(false)
+    inventory_continueSelling Boolean @default(false)
+    inventory_quantity        Int     @default(0)
+
+    // Variable Quantity
+    quantity_variable Boolean @default(false)
+    quantity_minimum  Int     @default(1)
+    quantity_maximum  Int     @default(10)
+
+    // Shipping
+    shippingPolicyId String?
+    ShippingPolicy   ShippingPolicy? @relation(fields: [shippingPolicyId], references: [id])
+
+    status      ProductStatus @default(ACTIVE)
+    Environment Environment   @relation(fields: [environmentId], references: [id])
+    variantId   String?       @unique
+    Variant     Variant?      @relation(fields: [variantId], references: [id], onDelete: Cascade)
+
+    @@index([environmentId])
+    @@index([currencyId])
+}
+
+enum CustomInformationFieldType {
+    INPUT
+    TEXTAREA
+}
+
+model CustomInformation {
+    id         String   @id @default(uuid())
+    orderIndex Int      @default(0)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    request    String
+    field_type CustomInformationFieldType
+
+    // Relation to Product
+    Product   Product? @relation(fields: [productId], references: [id])
+    productId String?
+
+    @@index([productId])
+}
+
+enum ProductAttributeSelectionTypes {
+    DROPDOWN
+    RADIO
+    CHECKBOX
+}
+
+enum CollectionStatus {
+    ACTIVE
+    ARCHIVED
+}
+
+model Collection {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    name   String
+    status CollectionStatus @default(ACTIVE)
+
+    environmentId String
+    Environment   Environment @relation(fields: [environmentId], references: [id])
+
+    // Product      Product[]
+    attributes   CollectionAttribute[]
+    CheckoutLink CheckoutLink[]
+    variants     Variant[]
+
+    @@index([environmentId])
+}
+
+model CollectionAttribute {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    orderIndex Int
+    name       String?
+
+    collection   Collection                 @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    collectionId String
+    values       CollectionAttributeValue[]
+}
+
+model CollectionAttributeValue {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    orderIndex Int     @default(0)
+    value      String?
+
+    attribute   CollectionAttribute @relation(fields: [attributeId], references: [id], onDelete: Cascade)
+    attributeId String
+    Variant     Variant[]
+}
+
+model Variant {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Tie it to the collection
+    collectionId String
+    collection   Collection @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+    product      Product?
+
+    attributeValues CollectionAttributeValue[]
+
+    @@index([collectionId])
+}
+
+enum CheckoutLinkStatus {
+    ACTIVE
+    INACTIVE
+    ARCHIVED
+}
+
+model CheckoutLink {
+    id        String    @id @default(uuid())
+    createdAt DateTime  @default(now())
+    updatedAt DateTime  @updatedAt
+    Payment   Payment[] @relation("PaymentCheckoutLinks")
+
+    redirect    Boolean            @default(false)
+    redirectUrl String             @default("")
+    status      CheckoutLinkStatus @default(ACTIVE)
+
+    // Product/Collection Relation
+    productId    String?
+    product      Product?    @relation("CheckoutLinks", fields: [productId], references: [id], onDelete: Cascade)
+    collectionId String?
+    collection   Collection? @relation(fields: [collectionId], references: [id], onDelete: Cascade)
+
+    @@index([productId, collectionId])
+}
+
+model Customer {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    email String @unique
+
+    payment Payment[] @relation("CustomerPayment")
+}
+
+model CustomerPaymentPhysicalAddress {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+
+    firstName String
+    lastName  String
+
+    // Address Fields
+    line1               String
+    line2               String
+    city                String
+    StateProvinceCounty String
+    ZipOrPostcode       String
+    country             String
+
+    Payment Payment[]
+}
+
+enum PaymentStatus {
+    PENDING
+    COMPLETE
+}
+
+model Payment {
+    id        String        @id @default(uuid())
+    createdAt DateTime      @default(now())
+    updatedAt DateTime      @updatedAt
+    status    PaymentStatus @default(PENDING) // "pending", "complete"
+
+    transactionHash String?
+    network         Network @default(testnet)
+    unsignedTx      String? // Used to check the signed CBOR
+    freeTier        Boolean
+
+    totalAmountCharged           Decimal    @default(0) @db.Decimal(10, 6)
+    totalAmountChargedCurrencyId String     @default("0db3331a-2868-46e2-9211-6549425bf247")
+    totalAmountChargedCurrency   Currencies @relation(name: "totalAmountChargedCurrency", fields: [totalAmountChargedCurrencyId], references: [id])
+    shippingAmount               Decimal    @default(0) @db.Decimal(10, 6)
+
+    // Currency and Price information
+    paymentPrice     Decimal @default(0) @db.Decimal(10, 6)
+    amount_withdrawn Decimal @default(0) @db.Decimal(10, 6)
+    priceInUSD       Decimal @db.Decimal(8, 2)
+    priceInADA       Decimal @db.Decimal(12, 6)
+
+    // Instant Withdrawal Payment Fields
+    withdrawalMethod  String // "instant", "manual"
+    withdrawalAddress String?
+
+    // Customer Data Specfic to this Payment
+    customerData_paymentAddress String
+
+    // Variable Quantity
+    item_quantity Int @default(1)
+
+    checkoutLinkId                   String
+    checkoutLink                     CheckoutLink                    @relation("PaymentCheckoutLinks", fields: [checkoutLinkId], references: [id], onDelete: Cascade)
+    productId                        String
+    product                          Product                         @relation("ProductPayment", fields: [productId], references: [id], onDelete: Cascade)
+    notification                     Notification[]
+    customer                         Customer?                       @relation("CustomerPayment", fields: [customerId], references: [id])
+    customerId                       String?
+    customerPaymentPhysicalAddressId String?
+    CustomerPaymentPhysicalAddress   CustomerPaymentPhysicalAddress? @relation(fields: [customerPaymentPhysicalAddressId], references: [id])
+    customerCustomInformation        CustomerCustomInformation[]
+    WebhookEvent                     WebhookEvent[]
+
+    // Fees
+    fee_rate       Decimal @default(0) @db.Decimal(6, 6) 
+    fee_amount     Decimal @default(0) @db.Decimal(10, 6) 
+    fees_collected Decimal @default(0) @db.Decimal(10, 6)
+
+    @@index([customerId])
+    @@index([productId])
+    @@index([checkoutLinkId])
+    @@index([totalAmountChargedCurrencyId])
+    @@index([customerPaymentPhysicalAddressId])
+}
+
+model CustomerCustomInformation {
+    id         String   @id @default(uuid())
+    orderIndex Int      @default(0)
+    createdAt  DateTime @default(now())
+    updatedAt  DateTime @updatedAt
+
+    // The value of the custom information
+    request  String
+    response String
+
+    // The payment
+    paymentId String
+    payment   Payment @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+    @@index([paymentId])
+}
+
+enum CurrencyType {
+    FIAT
+    CRYPTO
+}
+
+// Model for the Cardano currencies
+model Currencies {
+    id                 String       @id @default(uuid())
+    orderIndex         Int          @default(0) 
+    label              String       @unique
+    ticker             String       @unique
+    type               CurrencyType @default(CRYPTO)
+    symbol             String
+    decimals           Int
+    enabled            Boolean      @default(true)
+    lastPrice          Decimal      @db.Decimal(20, 12)
+    lastPriceUSD       Decimal      @db.Decimal(20, 12) 
+    lastPriceTimestamp DateTime     @default(now())
+    products           Product[]    @relation("ProductAcceptedCurrencies")
+    Product            Product[]
+    PaymentRelation    Payment[]    @relation("totalAmountChargedCurrency")
+
+    // Unit = policy_id+asset_name
+    preprodUnit        String?
+    mainnetUnit        String?
+    ShippingPolicyZone ShippingPolicyZone[]
+}
+
+enum NotificationSourceStatus {
+    ACTIVE
+    INACTIVE
+}
+
+enum NotificationSourceType {
+    EMAIL
+    // PHONE
+    // WEBHOOK
+}
+
+model NotificationSource {
+    id            String         @id @default(uuid())
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    environmentId String
+    environment   Environment    @relation("NotificationSources", fields: [environmentId], references: [id], onDelete: Cascade)
+    Notifications Notification[] @relation("NotificationSourcesNotification")
+
+    name   String?
+    type   NotificationSourceType   @default(EMAIL)
+    status NotificationSourceStatus @default(ACTIVE)
+
+    // email fields
+    email_address String?
+
+    @@index([environmentId])
+}
+
+model Notification {
+    id                   String             @id @default(uuid())
+    createdAt            DateTime           @default(now())
+    updatedAt            DateTime           @updatedAt
+    notificationSourceId String
+    notificationSource   NotificationSource @relation("NotificationSourcesNotification", fields: [notificationSourceId], references: [id], onDelete: Cascade)
+
+    type String // "email", "phone", "webhook"
+
+    // email fields
+    email_address String
+    email_subject String
+
+    // Event fields
+    paymentId String
+    payment   Payment @relation(fields: [paymentId], references: [id])
+
+    status String
+
+    @@index([paymentId])
+    @@index([notificationSourceId])
+}
+
+enum WebhookEventType {
+    // "payment.created", "payment.completed", "payment.failed", "payment.refunded", "payment.cancelled", "payment.expired"
+    payment_created
+    payment_completed
+    payment_failed
+    payment_refunded
+    payment_cancelled
+    payment_expired
+}
+
+enum WebhookStatus {
+    ACTIVE
+    INACTIVE
+}
+
+model Webhook {
+    id            String         @id @default(uuid())
+    createdAt     DateTime       @default(now())
+    updatedAt     DateTime       @updatedAt
+    environmentId String
+    Environment   Environment    @relation(fields: [environmentId], references: [id])
+    // Webhook Events
+    WebhookEvent  WebhookEvent[] @relation("WebhookEvents")
+
+    url    String?
+    status WebhookStatus @default(ACTIVE)
+
+    @@index([environmentId])
+}
+
+model WebhookEvent {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    type String // "payment", "withdrawal"
+
+    // Event fields
+    eventType WebhookEventType
+    paymentId String
+    payment   Payment          @relation(fields: [paymentId], references: [id])
+    status    String
+
+    Webhook   Webhook? @relation("WebhookEvents", fields: [webhookId], references: [id])
+    webhookId String?
+
+    @@index([paymentId])
+    @@index([webhookId])
+}
+
+model ShippingPolicy {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Shipping Policy Fields
+    name String
+
+    // Shipping Policy Relations
+    environmentId String
+    Environment   Environment @relation(fields: [environmentId], references: [id])
+
+    // Shipping Policy Relations
+    ShippingPolicyZone ShippingPolicyZone[]
+    Product            Product[]
+
+    @@index([environmentId])
+}
+
+model ShippingPolicyZone {
+    id        String   @id @default(uuid())
+    createdAt DateTime @default(now())
+    updatedAt DateTime @updatedAt
+
+    // Shipping Policy Zone Relations
+    shippingPolicyId String
+    ShippingPolicy   ShippingPolicy @relation(fields: [shippingPolicyId], references: [id])
+
+    // Shipping Policy Zone Fields
+    countries       Country[]
+    price           Decimal    @default(0) @db.Decimal(16, 8)
+    each_additional Decimal    @default(0) @db.Decimal(16, 8)
+    currencyId      String
+    currency        Currencies @relation(fields: [currencyId], references: [id])
+
+    @@index([shippingPolicyId])
+}
+
+// Create an ENUM for each region
+enum Region {
+    NORTH_AMERICA
+    EUROPE
+    SOUTH_AMERICA
+    AFRICA
+    ASIA
+    OCEANIA
+}
+
+model Country {
+    id String @id @default(uuid())
+
+    name   String
+    code   String
+    region Region
+
+    // Relations       @unique
+    ShippingPolicyZone   ShippingPolicyZone? @relation(fields: [shippingPolicyZoneId], references: [id])
+    shippingPolicyZoneId String?
+}

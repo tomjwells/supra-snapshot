@@ -1,0 +1,101 @@
+{
+  "name": "@acme/shadcn",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@heroicons/react": "^2.0.18",
+    "@radix-ui/react-accordion": "^1.1.2",
+    "@radix-ui/react-avatar": "^1.0.4",
+    "@radix-ui/react-checkbox": "^1.0.4",
+    "@radix-ui/react-dialog": "^1.0.5",
+    "@radix-ui/react-dropdown-menu": "^2.0.6",
+    "@radix-ui/react-navigation-menu": "1.1.4",
+    "@radix-ui/react-label": "^2.0.2",
+    "@radix-ui/react-popover": "^1.0.7",
+    "@radix-ui/react-scroll-area": "^1.0.5",
+    "@radix-ui/react-select": "^1.2.2",
+    "@radix-ui/react-slot": "^1.0.2",
+    "@radix-ui/react-tabs": "^1.0.4",
+    "@radix-ui/react-toast": "^1.1.5",
+    "@radix-ui/react-radio-group": "1.1.3",
+    "@radix-ui/react-icons": "1.3.0",
+    "class-variance-authority": "^0.7.0",
+    "embla-carousel-react": "8.0.0",
+    "sonner": "1.4.3",
+    "clsx": "2.0.0",
+    "cmdk": "0.2.1",
+    "lucide-react": "0.272.0",
+    "react-day-picker": "8.10.1",
+    "tailwind-merge": "2.2.1"
+  },
+  "devDependencies": {
+    "@acme/tailwind-config": "workspace:*",
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*",
+    "@tanstack/react-table": "^8.10.6",
+    "@types/react": "catalog:react18",
+    "@types/react-dom": "catalog:react18",
+    "prettier": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "react-hook-form": "7.51.4",
+    "tailwindcss": "3.3.3",
+    "tailwindcss-animate": "^1.0.7"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base",
+      "@acme/eslint-config/react"
+    ]
+  },
+  "prettier": "@acme/prettier-config",
+  "exports": {
+    ".": "./src/index.ts",
+    "./utils/cn": "./src/utils/cn.ts",
+    "./avatar": "./src/avatar.tsx",
+    "./accordion": "./src/accordion.tsx",
+    "./badge": "./src/badge.tsx",
+    "./button": "./src/button.tsx",
+    "./calendar": "./src/calendar.tsx",
+    "./card": "./src/card.tsx",
+    "./carousel": "./src/carousel.tsx",
+    "./checkbox": "./src/checkbox.tsx",
+    "./command": "./src/command.tsx",
+    "./data-table": "./src/data-table.tsx",
+    "./date-input": "./src/date-input.tsx",
+    "./date-range-picker": "./src/date-range-picker.tsx",
+    "./dialog": "./src/dialog.tsx",
+    "./dropdown-menu": "./src/dropdown-menu.tsx",
+    "./navigation-menu": "./src/navigation-menu.tsx",
+    "./form": "./src/form.tsx",
+    "./mode-toggle": "./src/mode-toggle.tsx",
+    "./icons": "./src/icons.tsx",
+    "./input": "./src/input.tsx",
+    "./label": "./src/label.tsx",
+    "./popover": "./src/popover.tsx",
+    "./radio-group": "./src/radio-group.tsx",
+    "./scroll-area": "./src/scroll-area.tsx",
+    "./select": "./src/select.tsx",
+    "./sheet": "./src/sheet.tsx",
+    "./sonner": "./src/sonner.tsx",
+    "./table": "./src/table.tsx",
+    "./tabs": "./src/tabs.tsx",
+    "./toaster": "./src/toaster.tsx",
+    "./use-toast": "./src/use-toast.tsx"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  }
+}

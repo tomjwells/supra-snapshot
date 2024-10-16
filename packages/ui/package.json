@@ -1,0 +1,76 @@
+{
+  "name": "@acme/ui",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "clean": "git clean -xdf .turbo node_modules",
+    "format": "prettier --check \"**/*.{ts,tsx}\"",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@acme/analytics": "workspace:*",
+    "@acme/cloudinary": "workspace:*",
+    "@acme/shadcn": "workspace:*",
+    "@acme/utils": "workspace:*",
+    "@heroicons/react": "2.1.1",
+    "@radix-ui/themes": "3.0.2",
+    "@radix-ui/react-tooltip": "1.0.7",
+    "browser-image-compression": "^2.0.2"
+  },
+  "devDependencies": {
+    "@acme/eslint-config": "workspace:*",
+    "@acme/prettier-config": "workspace:*",
+    "@acme/tailwind-config": "workspace:*",
+    "@acme/tsconfig": "workspace:*"
+  },
+  "eslintConfig": {
+    "root": true,
+    "extends": [
+      "@acme/eslint-config/base",
+      "@acme/eslint-config/react"
+    ]
+  },
+  "prettier": "@acme/prettier-config",
+  "exports": {
+    ".": "./src/index.ts",
+    "./forms": "./src/Form/index.tsx",
+    "./BackArrow": "./src/BackArrow.tsx",
+    "./Panel": "./src/Panel.tsx",
+    "./PageHeader": "./src/PageHeader.tsx",
+    "./TooltipPopover": "./src/TooltipPopover.tsx",
+    "./StatusBadge": "./src/StatusBadge.tsx",
+    "./Buttons": "./src/Buttons.tsx",
+    "./Buttons/NewResourceActionButton": "./src/Buttons/NewResourceActionButton.tsx",
+    "./List/[id]/CircleImageIcon": "./src/List/[id]/CircleImageIcon.tsx",
+    "./List/[id]/DetailField": "./src/List/[id]/DetailField.tsx",
+    "./List/[id]/DetailPanel": "./src/List/[id]/DetailPanel.tsx",
+    "./Brand": "./src/Brand/index.ts",
+    "./Brand/SupraLogo": "./src/Brand/SupraLogo.tsx",
+    "./Brand/GlobalError": "./src/Brand/global-error.tsx",
+    "./Table": "./src/Table/index.ts",
+    "./Menu": "./src/Menu/index.ts",
+    "./Table/TableAvatarItem": "./src/Table/TableAvatarItem.tsx",
+    "./Table/EmptyRow": "./src/Table/EmptyRow.tsx",
+    "./Forms/Input": "./src/Forms/Input.tsx",
+    "./Forms/GenericFormField": "./src/Forms/GenericFormField.tsx",
+    "./Forms/CheckboxInput": "./src/Forms/CheckboxInput.tsx",
+    "./Forms/EditImageItem": "./src/Forms/EditImageItem.tsx",
+    "./Forms/DropdownOptionsFormControl": "./src/Forms/DropdownOptionsFormControl.tsx",
+    "./Forms/SwitchField": "./src/Forms/SwitchField.tsx",
+    "./Forms/SelectableField": "./src/Forms/SelectableField.tsx",
+    "./Forms/InputField": "./src/Forms/InputField.tsx",
+    "./Forms/CheckboxField": "./src/Forms/CheckboxField.tsx",
+    "./loading": "./src/loading.tsx",
+    "./loadingSpinner2": "./src/loadingSpinner2.tsx",
+    "./styles/radixui-theme-config.css": "./styles/radixui-theme-config.css",
+    "./styles/supra-config.css": "./styles/supra-config.css"
+  },
+  "typesVersions": {
+    "*": {
+      "*": [
+        "src/*"
+      ]
+    }
+  }
+}
